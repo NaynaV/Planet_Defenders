@@ -38,8 +38,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      let cameraNode = SKCameraNode()
      let cameraMovePointsPerSec: CGFloat = 200.0
 
+     let pointslabel = SKLabelNode(fontNamed: "Chalkduster")
      let livesLabel = SKLabelNode(fontNamed: "Chalkduster")
-//nena
+    
    let motionManger = CMMotionManager()
       var xAcceleration:CGFloat = 0
        var touchLocation = CGPoint()
@@ -142,6 +143,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             //ground.setScale(2.5)
             ground.position = CGPoint(x:CGFloat(i)*ground.size.width,y:-(self.frame.size.height/2))
             self.addChild(ground)
+            showLives()
         }
        
        
@@ -170,31 +172,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        camera = cameraNode
        cameraNode.position = CGPoint(x: size.width/2, y: size.height/2)
        
-       livesLabel.text = "Lives: X"
-       livesLabel.fontColor = SKColor.white
-       livesLabel.fontSize = 100
-       livesLabel.zPosition = 150
-       livesLabel.horizontalAlignmentMode = .left
-       livesLabel.verticalAlignmentMode = .bottom
-       livesLabel.position = CGPoint(
+       pointslabel.text = "Lives: X"
+       pointslabel.fontColor = SKColor.white
+       pointslabel.fontSize = 100
+       pointslabel.zPosition = 150
+       pointslabel.horizontalAlignmentMode = .left
+       pointslabel.verticalAlignmentMode = .bottom
+       pointslabel.position = CGPoint(
            x: -playableRect.size.width/2 + CGFloat(20),
            y: -playableRect.size.height/2 + CGFloat(20))
-       cameraNode.addChild(livesLabel)
+       cameraNode.addChild(pointslabel)
+        
+        livesLabel.text = ""
+        livesLabel.fontColor = SKColor.white
+        livesLabel.fontSize = 100
+        livesLabel.zPosition = 50
+        livesLabel.position = CGPoint(x:playableRect.maxX - 200, y:playableRect.maxY - 100)
+        addChild(livesLabel)
         
         
-        //nena motion
-       /*
-        motionManger.accelerometerUpdateInterval = 0.2
-        motionManger.startAccelerometerUpdates(to: OperationQueue.current!) { (data:CMAccelerometerData?, error:Error?) in
-            if let accelerometerData = data {
-                let acceleration = accelerometerData.acceleration
-                self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
-            }
-        }*/
+        
        
     }
-    
-    //nena
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
        
@@ -218,22 +217,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    
-    
-    
-    //nena motion
-    /*
-    override func didSimulatePhysics() {
-          
-          spaceship.position.x += xAcceleration * 50
-          
-          if spaceship.position.x < -20 {
-              spaceship.position = CGPoint(x: self.size.width + 20, y: spaceship.position.y)
-          }else if spaceship.position.x > self.size.width + 20 {
-              spaceship.position = CGPoint(x: -20, y: spaceship.position.y)
-          }
-          
-      }*/
       
     
     
@@ -296,7 +279,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enumerateChildNodes(withName: "Enemy") { node, _ in
           let enemy = node as! SKSpriteNode
           
-            if enemy.zRotation >= -π/2 {
+            if enemy.zRotation != enemy.zRotation {
                 enemy.removeFromParent()
                 self.points += 1
             }
@@ -355,22 +338,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         Sun_00000.run(SKAction.sequence([actionMove, actionRemove]))
         
        }
-/*
-     func sceneTouched(touchLocation:CGPoint) {
-       let actionJump : SKAction
-       actionJump = SKAction.moveBy(x: 0, y: 350, duration: 0.7)
-       let jumpSequence = SKAction.sequence([actionJump, actionJump.reversed()])
-       spaceship.run(jumpSequence)
-       
-       }
-       override func touchesBegan(_ touches: Set<UITouch>,
-            with event: UIEvent?) {
-          guard let touch = touches.first else {
-            return
-          }
-          let touchLocation = touch.location(in: self)
-          sceneTouched(touchLocation: touchLocation)
-        }*/
+    
     func moveGrounds(){
         self.enumerateChildNodes(withName: "Ground", using: ({
             (node,error) in
@@ -422,6 +390,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             laser_time = 10
         }
     }
+    
+    func showLives(){
+            let heart = SKSpriteNode(imageNamed: "heart")
+            heart.zPosition = 50
+            heart.position = CGPoint(x:playableRect.maxX - 325,y:playableRect.maxY - 65)
+            heart.setScale(3)
+            addChild(heart)
+    }
+    
      override func update(_ currentTime: TimeInterval) {
        moveGrounds()
        checkCollisions()
@@ -439,8 +416,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      
        
        move(sprite: spaceship, velocity: velocity)
-       livesLabel.text = "Lives: \(lives)\t\tPoints\(points)"
-     
+       pointslabel.text = "Points: \(points)"
+        livesLabel.text = "X\(lives)"
         
        if lives <= 0 && !gameOver {
          gameOver = true
