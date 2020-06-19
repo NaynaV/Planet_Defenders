@@ -143,7 +143,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        
        spaceship.position = CGPoint(x: 400, y: 200)
        spaceship.zPosition = 100
-       spaceship.setScale(0.7)
+       spaceship.setScale(0.5)
        addChild(spaceship)
     
        
@@ -238,7 +238,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enumerateChildNodes(withName: "Enemy") { node, _ in
           let enemy = node as! SKSpriteNode
           
-            if enemy.position.y <= self.cameraRect.minY{
+            if enemy.zRotation >= -π/2 {
                 enemy.removeFromParent()
                 self.points += 1
             }
