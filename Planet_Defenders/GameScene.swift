@@ -30,9 +30,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      let enemyCollisionSound: SKAction = SKAction.playSoundFileNamed(
        "loselifeSound.wav", waitForCompletion: false)
      var invincible = false
-     var laser_time = 10
-
-     var lives = 7
+     var laser_time = 50
+    
+     var lives = 10
      var points = 0
      var gameOver = false
      let cameraNode = SKCameraNode()
@@ -41,12 +41,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      let pointslabel = SKLabelNode(fontNamed: "Chalkduster")
      let livesLabel = SKLabelNode(fontNamed: "Chalkduster")
     
-   let motionManger = CMMotionManager()
-      var xAcceleration:CGFloat = 0
-       var touchLocation = CGPoint()
+     let motionManger = CMMotionManager()
+     var xAcceleration:CGFloat = 0
+     var touchLocation = CGPoint()
        
      override init(size: CGSize) {
-       let maxAspectRatio:CGFloat = 16.0/9.0
+        let maxAspectRatio:CGFloat = 19.5/9.0
        let playableHeight = size.width / maxAspectRatio
        let playableMargin = (size.height-playableHeight)/2.0
        playableRect = CGRect(x: 0, y: playableMargin,
@@ -148,8 +148,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        
        
        spaceship.position = CGPoint(x: 400, y: 300)
-       spaceship.zPosition = 100
-       spaceship.setScale(0.5)
+       spaceship.zPosition = 150
+       spaceship.setScale(0.15)
+        spaceship.size.height *= 1.5
+        spaceship.zRotation = -π/2
        addChild(spaceship)
     
        
@@ -237,9 +239,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
          spaceship.run(SKAction.sequence([blinkAction, setHidden]))
          
          run(enemyCollisionSound)
-         
-       
          lives -= 1
+         
+         let explosion = SKEmitterNode(fileNamed: "Explosion.sks")
+         explosion?.position = enemy.position
+         addChild(explosion!)
        
        }
     func laserHit(laser: SKSpriteNode) {
@@ -270,6 +274,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
            if node.frame.insetBy(dx: 20, dy: 20).intersects(
              self.spaceship.frame) {
              hitEnemies.append(enemy)
+             enemy.removeFromParent()
            }
          }
          for enemy in hitEnemies {
@@ -279,14 +284,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enumerateChildNodes(withName: "Enemy") { node, _ in
           let enemy = node as! SKSpriteNode
           
-            if enemy.zRotation != enemy.zRotation {
-                enemy.removeFromParent()
-                self.points += 1
-            }
-        }
-        for enemy in hitEnemies {
-          spaceshipHit(enemy: enemy)
-        }
+              if enemy.zRotation >= -π/2 {
+                          let explosion = SKEmitterNode(fileNamed: "Explosion.sks")!
+                          explosion.position = enemy.position
+                          self.addChild(explosion)
+                          
+                          self.run(SKAction.playSoundFileNamed("explosion.mp3", waitForCompletion: false))
+                          enemy.removeFromParent()
+                         
+                          self.run(SKAction.wait(forDuration: 2))
+                          {
+                              explosion.removeFromParent()
+                          }
+                          self.points += 1
+                      }
+                  }
+                  for enemy in hitEnemies {
+                    spaceshipHit(enemy: enemy)
+                  }
         
         
            
@@ -303,17 +318,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                spaceshipCollect(Sun_00000: Sun_00000)
              }
         
-        var hitLaser: [SKSpriteNode] = []
         enumerateChildNodes(withName: "laser") { node, _ in
           let laser = node as! SKSpriteNode
 
-            if laser.frame.intersects(self.enemy1.frame){
-                hitLaser.append(laser)
+            if laser.zRotation >= -π/2  {
+                laser.removeFromParent()
             }
         }
-          for laser in hitLaser {
-            self.laserHit(laser: laser)
-          }
         
         
         
@@ -363,20 +374,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func spawnLaser(){
         let laser = laser1.copy() as! SKSpriteNode
-        laser.position = spaceship.position
+        laser.position = CGPoint(x:spaceship.position.x + 15, y:spaceship.position.y)
         laser.zPosition = 100
         laser.name = "laser"
         laser.setScale(3)
         laser.zRotation = -π/2
-        laser.physicsBody?.collisionBitMask = enemyCat
+        laser.size.height *= 3
+        laser.physicsBody?.collisionBitMask = 0
         laser.physicsBody?.contactTestBitMask = enemyCat
         laser.physicsBody?.categoryBitMask = laserCat
         laser.physicsBody?.usesPreciseCollisionDetection = true
         addChild(laser)
         
-        
-        laser.physicsBody?.collisionBitMask = enemyCat
-        laser.physicsBody?.categoryBitMask = laserCat
         
         laser.run(SKAction.move(to: CGPoint(x: cameraRect.maxX+100, y: laser.position.y), duration: 1))
         laser.physicsBody = SKPhysicsBody(rectangleOf: laser.size)
@@ -387,7 +396,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         laser_time -= 1
         if(laser_time <= 0){
             spawnLaser()
-            laser_time = 10
+            laser_time = 50
         }
     }
     
@@ -413,11 +422,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        }
        lastUpdateTime = currentTime
         
-     
-       
        move(sprite: spaceship, velocity: velocity)
        pointslabel.text = "Points: \(points)"
-        livesLabel.text = "X\(lives)"
+        livesLabel.text = "X\(lives/2)"
         
        if lives <= 0 && !gameOver {
          gameOver = true
