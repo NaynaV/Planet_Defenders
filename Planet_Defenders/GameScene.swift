@@ -9,11 +9,14 @@
 import SpriteKit
 import GameplayKit
 
-class GameScene: SKScene {
-     
+class GameScene: SKScene, SKPhysicsContactDelegate {
+    
+     let laserCat:UInt32 = 0x1 << 0
+     let enemyCat:UInt32 = 0x1 << 1
      let spaceship = SKSpriteNode(imageNamed: "spaceship")
     
      let laser1 = SKSpriteNode(imageNamed: "beam")
+     let enemy1 =  SKSpriteNode(imageNamed: "alien")
      var lastUpdateTime: TimeInterval = 0
      var dt: TimeInterval = 0
      let spaceshipMovePointsPerSec: CGFloat = 480.0
@@ -45,6 +48,8 @@ class GameScene: SKScene {
                              width: size.width,
                              height: playableHeight)
         
+        
+        
        super.init(size: size)
      }
 
@@ -72,10 +77,31 @@ class GameScene: SKScene {
        shape.lineWidth = 4.0
        addChild(shape)
      }
+    func didBegin(_ contact: SKPhysicsContact) {
+        var firstBody: SKPhysicsBody
+        var secondBody: SKPhysicsBody
+        
+        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask{
+            firstBody = contact.bodyA
+            secondBody = contact.bodyB
+        }
+        else
+        {
+            firstBody = contact.bodyB
+            secondBody = contact.bodyA
+            
+        }
+        if(firstBody.categoryBitMask & laserCat) != 0 && (secondBody.categoryBitMask & enemyCat) != 0{
+            laswerDidCollideWithAlien(laser: firstBody.node as! SKSpriteNode, enemy: secondBody.node as! SKSpriteNode)
+        }
+    }
+    func laswerDidCollideWithAlien(laser: SKSpriteNode, enemy: SKSpriteNode){
+        points += 1
+    }
        
        
      func spawnEnemy() {
-       let enemy = SKSpriteNode(imageNamed: "alien")
+        let enemy = enemy1.copy() as! SKSpriteNode
        enemy.position = CGPoint(
         x: CGFloat.random(min: cameraRect.maxX-100, max: cameraRect.maxX),
         y: CGFloat.random(min: cameraRect.minY + 100, max: cameraRect.maxY))
@@ -83,10 +109,16 @@ class GameScene: SKScene {
        enemy.zRotation = -π/2
        enemy.name = "Enemy"
        enemy.setScale(5)
+       enemy.physicsBody = SKPhysicsBody(rectangleOf: enemy.size)
+       enemy.physicsBody!.affectedByGravity = false
+        
+       enemy.physicsBody?.categoryBitMask = enemyCat
+       enemy.physicsBody?.contactTestBitMask = laserCat
+        
        addChild(enemy)
        
        let actionMove =
-         SKAction.moveBy(x: -(size.width + enemy.size.width), y: 0, duration: 4.0)
+       SKAction.moveBy(x: -(size.width + enemy.size.width), y: 0, duration: 4.0)
        let actionRemove = SKAction.removeFromParent()
        enemy.run(SKAction.sequence([actionMove, actionRemove]))
      }
@@ -97,7 +129,7 @@ class GameScene: SKScene {
        }
      override func didMove(to view: SKView) {
 
-         
+        self.physicsWorld.contactDelegate = self
         for i in 0...3{
             let ground = SKSpriteNode(imageNamed: "background")
             ground.name = "Ground"
@@ -203,6 +235,18 @@ class GameScene: SKScene {
            spaceshipHit(enemy: enemy)
          }
         
+        enumerateChildNodes(withName: "Enemy") { node, _ in
+          let enemy = node as! SKSpriteNode
+          
+            if enemy.position.y <= self.cameraRect.minY{
+                enemy.removeFromParent()
+                self.points += 1
+            }
+        }
+        for enemy in hitEnemies {
+          spaceshipHit(enemy: enemy)
+        }
+        
         
            
            var hitSun_00000s: [SKSpriteNode] = []
@@ -219,17 +263,17 @@ class GameScene: SKScene {
              }
         
         var hitLaser: [SKSpriteNode] = []
-                  enumerateChildNodes(withName: "laser") { node, _ in
-                    let laser = node as! SKSpriteNode
-                      
-                      if node.frame.insetBy(dx: 20, dy: 20).intersects(
-                        self.laser1.frame) {
-                        hitLaser.append(laser)
-                      }
-                    }
-                    for laser in hitLaser {
-                      laserHit(laser: laser)
-                    }
+        enumerateChildNodes(withName: "laser") { node, _ in
+          let laser = node as! SKSpriteNode
+
+            if laser.frame.intersects(self.enemy1.frame){
+                hitLaser.append(laser)
+            }
+        }
+          for laser in hitLaser {
+            self.laserHit(laser: laser)
+          }
+        
         
         
        }
@@ -245,6 +289,12 @@ class GameScene: SKScene {
          Sun_00000.zPosition = 1
         Sun_00000.setScale(0.3)
          addChild(Sun_00000)
+        
+
+        let actionMove =
+        SKAction.moveBy(x: -(size.width + Sun_00000.size.width), y: 0, duration: 4.0)
+        let actionRemove = SKAction.removeFromParent()
+        Sun_00000.run(SKAction.sequence([actionMove, actionRemove]))
         
        }
 
@@ -297,9 +347,19 @@ class GameScene: SKScene {
         laser.name = "laser"
         laser.setScale(3)
         laser.zRotation = -π/2
+        laser.physicsBody?.collisionBitMask = enemyCat
+        laser.physicsBody?.contactTestBitMask = enemyCat
+        laser.physicsBody?.categoryBitMask = laserCat
+        laser.physicsBody?.usesPreciseCollisionDetection = true
         addChild(laser)
         
+        
+        laser.physicsBody?.collisionBitMask = enemyCat
+        laser.physicsBody?.categoryBitMask = laserCat
+        
         laser.run(SKAction.move(to: CGPoint(x: cameraRect.maxX+100, y: laser.position.y), duration: 1))
+        laser.physicsBody = SKPhysicsBody(rectangleOf: laser.size)
+        
     }
     
     func checkShoot(){
@@ -322,6 +382,7 @@ class GameScene: SKScene {
          dt = 0
        }
        lastUpdateTime = currentTime
+        
      
        
        move(sprite: spaceship, velocity: velocity)
@@ -331,9 +392,6 @@ class GameScene: SKScene {
        if lives <= 0 && !gameOver {
          gameOver = true
          print("You lose!")
-         
-         // 1
-       
        
      }
      
