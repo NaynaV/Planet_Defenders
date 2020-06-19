@@ -206,8 +206,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
          for touch in touches{
                           touchLocation = touch.location(in: self)
-                          spaceship.position.y = (touchLocation.y)
-                      }
+            if(touchLocation.y > spaceship.position.y){
+
+                spaceship.run(SKAction.move(to: CGPoint(x: spaceship.position.x, y: cameraRect.maxY), duration: 1))
+            }
+            else if(touchLocation.y < spaceship.position.y){
+
+                spaceship.run(SKAction.move(to: CGPoint(x: spaceship.position.x, y: cameraRect.minY), duration: 1))
+            }
+            
+        }
     }
     
     
@@ -380,11 +388,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         if(spaceship.position.y >= cameraRect.maxY - 100)
         {
             velocity.y = -velocity.y
-            scene?.isUserInteractionEnabled = false
-            spaceship.run(SKAction.sequence([
-            SKAction.wait(forDuration: 0.7),
-            SKAction.run {
-                self.scene?.isUserInteractionEnabled = true}]))
             
         }
     }
