@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		0850C5D5249AEF7200358874 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0850C5D4249AEF7200358874 /* AppDelegate.swift */; };
-		0850C5D7249AEF7200358874 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0850C5D6249AEF7200358874 /* GameScene.sks */; };
 		0850C5D9249AEF7200358874 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0850C5D8249AEF7200358874 /* Actions.sks */; };
 		0850C5DB249AEF7200358874 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0850C5DA249AEF7200358874 /* GameScene.swift */; };
 		0850C5DD249AEF7200358874 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0850C5DC249AEF7200358874 /* GameViewController.swift */; };
@@ -17,6 +16,7 @@
 		0850C5E5249AEF7500358874 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0850C5E3249AEF7500358874 /* LaunchScreen.storyboard */; };
 		0850C5F0249AEF7500358874 /* Planet_DefendersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0850C5EF249AEF7500358874 /* Planet_DefendersTests.swift */; };
 		0850C5FB249AEF7500358874 /* Planet_DefendersUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0850C5FA249AEF7500358874 /* Planet_DefendersUITests.swift */; };
+		0850C60E249AF7B500358874 /* MyUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0850C60D249AF7B500358874 /* MyUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +39,6 @@
 /* Begin PBXFileReference section */
 		0850C5D1249AEF7200358874 /* Planet_Defenders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Planet_Defenders.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0850C5D4249AEF7200358874 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0850C5D6249AEF7200358874 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		0850C5D8249AEF7200358874 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
 		0850C5DA249AEF7200358874 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		0850C5DC249AEF7200358874 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -53,6 +52,7 @@
 		0850C5F6249AEF7500358874 /* Planet_DefendersUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Planet_DefendersUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0850C5FA249AEF7500358874 /* Planet_DefendersUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Planet_DefendersUITests.swift; sourceTree = "<group>"; };
 		0850C5FC249AEF7500358874 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0850C60D249AF7B500358874 /* MyUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,7 +104,6 @@
 			isa = PBXGroup;
 			children = (
 				0850C5D4249AEF7200358874 /* AppDelegate.swift */,
-				0850C5D6249AEF7200358874 /* GameScene.sks */,
 				0850C5D8249AEF7200358874 /* Actions.sks */,
 				0850C5DA249AEF7200358874 /* GameScene.swift */,
 				0850C5DC249AEF7200358874 /* GameViewController.swift */,
@@ -112,6 +111,7 @@
 				0850C5E1249AEF7500358874 /* Assets.xcassets */,
 				0850C5E3249AEF7500358874 /* LaunchScreen.storyboard */,
 				0850C5E6249AEF7500358874 /* Info.plist */,
+				0850C60D249AF7B500358874 /* MyUtils.swift */,
 			);
 			path = Planet_Defenders;
 			sourceTree = "<group>";
@@ -239,7 +239,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				0850C5E0249AEF7200358874 /* Main.storyboard in Resources */,
-				0850C5D7249AEF7200358874 /* GameScene.sks in Resources */,
 				0850C5E2249AEF7500358874 /* Assets.xcassets in Resources */,
 				0850C5E5249AEF7500358874 /* LaunchScreen.storyboard in Resources */,
 				0850C5D9249AEF7200358874 /* Actions.sks in Resources */,
@@ -270,6 +269,7 @@
 				0850C5DB249AEF7200358874 /* GameScene.swift in Sources */,
 				0850C5DD249AEF7200358874 /* GameViewController.swift in Sources */,
 				0850C5D5249AEF7200358874 /* AppDelegate.swift in Sources */,
+				0850C60E249AF7B500358874 /* MyUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -374,7 +374,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -428,7 +428,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
