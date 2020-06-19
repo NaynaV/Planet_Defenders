@@ -12,6 +12,8 @@ import GameplayKit
 class GameScene: SKScene {
      
      let spaceship = SKSpriteNode(imageNamed: "spaceship")
+    
+     let laser1 = SKSpriteNode(imageNamed: "beam")
      var lastUpdateTime: TimeInterval = 0
      var dt: TimeInterval = 0
      let spaceshipMovePointsPerSec: CGFloat = 480.0
@@ -24,6 +26,7 @@ class GameScene: SKScene {
      let enemyCollisionSound: SKAction = SKAction.playSoundFileNamed(
        "loselifeSound.wav", waitForCompletion: false)
      var invincible = false
+     var laser_time = 10
 
      var lives = 7
      var points = 0
@@ -32,7 +35,6 @@ class GameScene: SKScene {
      let cameraMovePointsPerSec: CGFloat = 200.0
 
      let livesLabel = SKLabelNode(fontNamed: "Chalkduster")
-       let pointsLabel = SKLabelNode(fontNamed: "Chalkduster")
 
        
      override init(size: CGSize) {
@@ -106,10 +108,12 @@ class GameScene: SKScene {
             self.addChild(ground)
         }
        
-       spaceship.position = CGPoint(x: 300, y: 800)
+       
+       spaceship.position = CGPoint(x: 400, y: 200)
        spaceship.zPosition = 100
        spaceship.setScale(0.7)
        addChild(spaceship)
+    
        
        run(SKAction.repeatForever(
          SKAction.sequence([SKAction.run() { [weak self] in
@@ -131,7 +135,7 @@ class GameScene: SKScene {
        cameraNode.position = CGPoint(x: size.width/2, y: size.height/2)
        
        livesLabel.text = "Lives: X"
-       livesLabel.fontColor = SKColor.black
+       livesLabel.fontColor = SKColor.white
        livesLabel.fontSize = 100
        livesLabel.zPosition = 150
        livesLabel.horizontalAlignmentMode = .left
@@ -141,10 +145,8 @@ class GameScene: SKScene {
            y: -playableRect.size.height/2 + CGFloat(20))
        cameraNode.addChild(livesLabel)
        
-       
-       
-       
      }
+    
       func spaceshipHit(enemy: SKSpriteNode) {
          invincible = true
          let blinkTimes = 10.0
@@ -167,6 +169,13 @@ class GameScene: SKScene {
          lives -= 1
        
        }
+    func laserHit(laser: SKSpriteNode) {
+        laser.removeFromParent()
+      points += 1
+    
+    }
+    
+    
        
        func spaceshipCollect(Sun_00000: SKSpriteNode) {
            Sun_00000.removeFromParent()
@@ -193,6 +202,8 @@ class GameScene: SKScene {
          for enemy in hitEnemies {
            spaceshipHit(enemy: enemy)
          }
+        
+        
            
            var hitSun_00000s: [SKSpriteNode] = []
            enumerateChildNodes(withName: "Sun_00000") { node, _ in
@@ -206,6 +217,21 @@ class GameScene: SKScene {
              for Sun_00000 in hitSun_00000s {
                spaceshipCollect(Sun_00000: Sun_00000)
              }
+        
+        var hitLaser: [SKSpriteNode] = []
+                  enumerateChildNodes(withName: "laser") { node, _ in
+                    let laser = node as! SKSpriteNode
+                      
+                      if node.frame.insetBy(dx: 20, dy: 20).intersects(
+                        self.laser1.frame) {
+                        hitLaser.append(laser)
+                      }
+                    }
+                    for laser in hitLaser {
+                      laserHit(laser: laser)
+                    }
+        
+        
        }
        func spawnSun_00000() {
          // 1
@@ -229,27 +255,14 @@ class GameScene: SKScene {
        spaceship.run(jumpSequence)
        
        }
-    var touchLocation = CGPoint()
-    
        override func touchesBegan(_ touches: Set<UITouch>,
             with event: UIEvent?) {
-        for touch in touches{
-            touchLocation = touch.location(in: self)
-            spaceship.position.x = (touchLocation.x)
-            spaceship.position.y = (touchLocation.y)
-            
-        }
-        /*
           guard let touch = touches.first else {
             return
           }
           let touchLocation = touch.location(in: self)
-          sceneTouched(touchLocation: touchLocation) */
+          sceneTouched(touchLocation: touchLocation)
         }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        
-    }
     func moveGrounds(){
         self.enumerateChildNodes(withName: "Ground", using: ({
             (node,error) in
@@ -275,10 +288,33 @@ class GameScene: SKScene {
             
         }
     }
+    
+    
+    func spawnLaser(){
+        let laser = laser1.copy() as! SKSpriteNode
+        laser.position = spaceship.position
+        laser.zPosition = 100
+        laser.name = "laser"
+        laser.setScale(3)
+        laser.zRotation = -π/2
+        addChild(laser)
+        
+        laser.run(SKAction.move(to: CGPoint(x: cameraRect.maxX+100, y: laser.position.y), duration: 1))
+    }
+    
+    func checkShoot(){
+        laser_time -= 1
+        if(laser_time <= 0){
+            spawnLaser()
+            laser_time = 10
+        }
+    }
      override func update(_ currentTime: TimeInterval) {
        moveGrounds()
        checkCollisions()
        checkBounds()
+       checkShoot()
+       
        
        if lastUpdateTime > 0 {
          dt = currentTime - lastUpdateTime
