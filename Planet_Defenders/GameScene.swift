@@ -8,6 +8,7 @@
 
 import SpriteKit
 import GameplayKit
+import CoreMotion
 
 class GameScene: SKScene {
      
@@ -35,7 +36,10 @@ class GameScene: SKScene {
      let cameraMovePointsPerSec: CGFloat = 200.0
 
      let livesLabel = SKLabelNode(fontNamed: "Chalkduster")
-
+//nena
+   let motionManger = CMMotionManager()
+      var xAcceleration:CGFloat = 0
+       var touchLocation = CGPoint()
        
      override init(size: CGSize) {
        let maxAspectRatio:CGFloat = 16.0/9.0
@@ -109,7 +113,7 @@ class GameScene: SKScene {
         }
        
        
-       spaceship.position = CGPoint(x: 400, y: 200)
+       spaceship.position = CGPoint(x: 400, y: 300)
        spaceship.zPosition = 100
        spaceship.setScale(0.7)
        addChild(spaceship)
@@ -144,8 +148,54 @@ class GameScene: SKScene {
            x: -playableRect.size.width/2 + CGFloat(20),
            y: -playableRect.size.height/2 + CGFloat(20))
        cameraNode.addChild(livesLabel)
+        
+        
+        //nena motion
+       /*
+        motionManger.accelerometerUpdateInterval = 0.2
+        motionManger.startAccelerometerUpdates(to: OperationQueue.current!) { (data:CMAccelerometerData?, error:Error?) in
+            if let accelerometerData = data {
+                let acceleration = accelerometerData.acceleration
+                self.xAcceleration = CGFloat(acceleration.x) * 0.75 + self.xAcceleration * 0.25
+            }
+        }*/
        
-     }
+    }
+    
+    //nena
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+       
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+       
+    }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+         for touch in touches{
+                          touchLocation = touch.location(in: self)
+                          spaceship.position.y = (touchLocation.y)
+                      }
+    }
+    
+    
+    
+    
+    //nena motion
+    /*
+    override func didSimulatePhysics() {
+          
+          spaceship.position.x += xAcceleration * 50
+          
+          if spaceship.position.x < -20 {
+              spaceship.position = CGPoint(x: self.size.width + 20, y: spaceship.position.y)
+          }else if spaceship.position.x > self.size.width + 20 {
+              spaceship.position = CGPoint(x: -20, y: spaceship.position.y)
+          }
+          
+      }*/
+      
+    
     
       func spaceshipHit(enemy: SKSpriteNode) {
          invincible = true
@@ -247,7 +297,7 @@ class GameScene: SKScene {
          addChild(Sun_00000)
         
        }
-
+/*
      func sceneTouched(touchLocation:CGPoint) {
        let actionJump : SKAction
        actionJump = SKAction.moveBy(x: 0, y: 350, duration: 0.7)
@@ -262,7 +312,7 @@ class GameScene: SKScene {
           }
           let touchLocation = touch.location(in: self)
           sceneTouched(touchLocation: touchLocation)
-        }
+        }*/
     func moveGrounds(){
         self.enumerateChildNodes(withName: "Ground", using: ({
             (node,error) in
