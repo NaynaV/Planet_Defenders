@@ -15,6 +15,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      let laserCat:UInt32 = 0x1 << 0
      let enemyCat:UInt32 = 0x1 << 1
      let spaceship = SKSpriteNode(imageNamed: "spaceship")
+     var level = 1
     
      let laser1 = SKSpriteNode(imageNamed: "beam")
      let enemy1 =  SKSpriteNode(imageNamed: "alien")
@@ -431,6 +432,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
          print("You lose!")
        
      }
+        if points == 10{
+            level = 2
+        }
      
        }
      

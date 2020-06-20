@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		084C7976249D56530024ADF1 /* Explosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 084C7975249D56530024ADF1 /* Explosion.sks */; };
+		084C7979249DA72B0024ADF1 /* MainMenu.sks in Resources */ = {isa = PBXBuildFile; fileRef = 084C7977249DA72B0024ADF1 /* MainMenu.sks */; };
+		084C797A249DA72B0024ADF1 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084C7978249DA72B0024ADF1 /* MainMenu.swift */; };
 		0850C5D5249AEF7200358874 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0850C5D4249AEF7200358874 /* AppDelegate.swift */; };
 		0850C5D9249AEF7200358874 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0850C5D8249AEF7200358874 /* Actions.sks */; };
 		0850C5DB249AEF7200358874 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0850C5DA249AEF7200358874 /* GameScene.swift */; };
@@ -39,6 +41,8 @@
 
 /* Begin PBXFileReference section */
 		084C7975249D56530024ADF1 /* Explosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Explosion.sks; sourceTree = "<group>"; };
+		084C7977249DA72B0024ADF1 /* MainMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MainMenu.sks; sourceTree = "<group>"; };
+		084C7978249DA72B0024ADF1 /* MainMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
 		0850C5D1249AEF7200358874 /* Planet_Defenders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Planet_Defenders.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0850C5D4249AEF7200358874 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0850C5D8249AEF7200358874 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
@@ -105,6 +109,8 @@
 		0850C5D3249AEF7200358874 /* Planet_Defenders */ = {
 			isa = PBXGroup;
 			children = (
+				084C7977249DA72B0024ADF1 /* MainMenu.sks */,
+				084C7978249DA72B0024ADF1 /* MainMenu.swift */,
 				084C7975249D56530024ADF1 /* Explosion.sks */,
 				0850C5D4249AEF7200358874 /* AppDelegate.swift */,
 				0850C5D8249AEF7200358874 /* Actions.sks */,
@@ -242,6 +248,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0850C5E0249AEF7200358874 /* Main.storyboard in Resources */,
+				084C7979249DA72B0024ADF1 /* MainMenu.sks in Resources */,
 				0850C5E2249AEF7500358874 /* Assets.xcassets in Resources */,
 				084C7976249D56530024ADF1 /* Explosion.sks in Resources */,
 				0850C5E5249AEF7500358874 /* LaunchScreen.storyboard in Resources */,
@@ -270,6 +277,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				084C797A249DA72B0024ADF1 /* MainMenu.swift in Sources */,
 				0850C5DB249AEF7200358874 /* GameScene.swift in Sources */,
 				0850C5DD249AEF7200358874 /* GameViewController.swift in Sources */,
 				0850C5D5249AEF7200358874 /* AppDelegate.swift in Sources */,
