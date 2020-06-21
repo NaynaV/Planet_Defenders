@@ -10,6 +10,8 @@
 		084C7976249D56530024ADF1 /* Explosion.sks in Resources */ = {isa = PBXBuildFile; fileRef = 084C7975249D56530024ADF1 /* Explosion.sks */; };
 		084C7979249DA72B0024ADF1 /* MainMenu.sks in Resources */ = {isa = PBXBuildFile; fileRef = 084C7977249DA72B0024ADF1 /* MainMenu.sks */; };
 		084C797A249DA72B0024ADF1 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084C7978249DA72B0024ADF1 /* MainMenu.swift */; };
+		084C797C249DA8C50024ADF1 /* GameOverScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 084C797B249DA8C50024ADF1 /* GameOverScene.swift */; };
+		084F86FF249EF0060077F66C /* spark.sks in Resources */ = {isa = PBXBuildFile; fileRef = 084F86FE249EF0060077F66C /* spark.sks */; };
 		0850C5D5249AEF7200358874 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0850C5D4249AEF7200358874 /* AppDelegate.swift */; };
 		0850C5D9249AEF7200358874 /* Actions.sks in Resources */ = {isa = PBXBuildFile; fileRef = 0850C5D8249AEF7200358874 /* Actions.sks */; };
 		0850C5DB249AEF7200358874 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0850C5DA249AEF7200358874 /* GameScene.swift */; };
@@ -43,6 +45,8 @@
 		084C7975249D56530024ADF1 /* Explosion.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Explosion.sks; sourceTree = "<group>"; };
 		084C7977249DA72B0024ADF1 /* MainMenu.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MainMenu.sks; sourceTree = "<group>"; };
 		084C7978249DA72B0024ADF1 /* MainMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
+		084C797B249DA8C50024ADF1 /* GameOverScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GameOverScene.swift; sourceTree = "<group>"; };
+		084F86FE249EF0060077F66C /* spark.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = spark.sks; sourceTree = "<group>"; };
 		0850C5D1249AEF7200358874 /* Planet_Defenders.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Planet_Defenders.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0850C5D4249AEF7200358874 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0850C5D8249AEF7200358874 /* Actions.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Actions.sks; sourceTree = "<group>"; };
@@ -120,7 +124,9 @@
 				0850C5E1249AEF7500358874 /* Assets.xcassets */,
 				0850C5E3249AEF7500358874 /* LaunchScreen.storyboard */,
 				0850C5E6249AEF7500358874 /* Info.plist */,
+				084C797B249DA8C50024ADF1 /* GameOverScene.swift */,
 				0850C60D249AF7B500358874 /* MyUtils.swift */,
+				084F86FE249EF0060077F66C /* spark.sks */,
 			);
 			path = Planet_Defenders;
 			sourceTree = "<group>";
@@ -247,6 +253,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				084F86FF249EF0060077F66C /* spark.sks in Resources */,
 				0850C5E0249AEF7200358874 /* Main.storyboard in Resources */,
 				084C7979249DA72B0024ADF1 /* MainMenu.sks in Resources */,
 				0850C5E2249AEF7500358874 /* Assets.xcassets in Resources */,
@@ -281,6 +288,7 @@
 				0850C5DB249AEF7200358874 /* GameScene.swift in Sources */,
 				0850C5DD249AEF7200358874 /* GameViewController.swift in Sources */,
 				0850C5D5249AEF7200358874 /* AppDelegate.swift in Sources */,
+				084C797C249DA8C50024ADF1 /* GameOverScene.swift in Sources */,
 				0850C60E249AF7B500358874 /* MyUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -455,13 +463,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = CZ7C79C32L;
+				DEVELOPMENT_TEAM = 4GDSUWAKB7;
 				INFOPLIST_FILE = Planet_Defenders/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Cloud-Managed.Planet-Defenders";
+				PRODUCT_BUNDLE_IDENTIFIER = "FarzaadGoiporia.Planet-Defenders";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -473,12 +481,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4GDSUWAKB7;
 				INFOPLIST_FILE = Planet_Defenders/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "Cloud-Managed.Planet-Defenders";
+				PRODUCT_BUNDLE_IDENTIFIER = "FarzaadGoiporia.Planet-Defenders";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

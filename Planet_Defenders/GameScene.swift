@@ -11,14 +11,24 @@ import GameplayKit
 import CoreMotion
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
+
     
      let laserCat:UInt32 = 0x1 << 0
      let enemyCat:UInt32 = 0x1 << 1
      let spaceship = SKSpriteNode(imageNamed: "spaceship")
      var level = 1
+     //var isPlaying = true
+    
+    let hitSound: SKAction = SKAction.playSoundFileNamed(
+      "hit sound.wav", waitForCompletion: false)
+    let bulletSound: SKAction = SKAction.playSoundFileNamed(
+      "bullet.wav", waitForCompletion: false)
+    let looseSound: SKAction = SKAction.playSoundFileNamed(
+    "lose_music.wav", waitForCompletion: false)
     
      let laser1 = SKSpriteNode(imageNamed: "beam")
      let enemy1 =  SKSpriteNode(imageNamed: "alien")
+     let boss =  SKSpriteNode(imageNamed: "boss_alien")
      var lastUpdateTime: TimeInterval = 0
      var dt: TimeInterval = 0
      let spaceshipMovePointsPerSec: CGFloat = 480.0
@@ -26,13 +36,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
      let playableRect: CGRect
      var lastTouchLocation: CGPoint?
      var ground = SKSpriteNode()
-     let jumpSound: SKAction = SKAction.playSoundFileNamed(
-       "jumpSound.wav", waitForCompletion: false)
-     let enemyCollisionSound: SKAction = SKAction.playSoundFileNamed(
-       "loselifeSound.wav", waitForCompletion: false)
+     
      var invincible = false
      var laser_time = 50
-    
+     var bossLives = 30
      var lives = 10
      var points = 0
      var gameOver = false
@@ -107,7 +114,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        
        
      func spawnEnemy() {
-        let enemy = enemy1.copy() as! SKSpriteNode
+        for _ in 1...level{
+       let enemy = enemy1.copy() as! SKSpriteNode
        enemy.position = CGPoint(
         x: CGFloat.random(min: cameraRect.maxX-100, max: cameraRect.maxX),
         y: CGFloat.random(min: cameraRect.minY + 100, max: cameraRect.maxY))
@@ -128,13 +136,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        let actionRemove = SKAction.removeFromParent()
        enemy.run(SKAction.sequence([actionMove, actionRemove]))
      }
+    }
        func move(sprite: SKSpriteNode, velocity: CGPoint) {
          let amountToMove = CGPoint(x: velocity.x * CGFloat(dt),
                                     y: velocity.y * CGFloat(dt))
          sprite.position += amountToMove
        }
      override func didMove(to view: SKView) {
-
+        
+        playBackgroundMusic(filename: "background_music")
+        
         self.physicsWorld.contactDelegate = self
         for i in 0...3{
             let ground = SKSpriteNode(imageNamed: "background")
@@ -148,24 +159,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
        
        
-       spaceship.position = CGPoint(x: 400, y: 300)
-       spaceship.zPosition = 150
-       spaceship.setScale(0.15)
+        spaceship.position = CGPoint(x: 400, y: 300)
+        spaceship.zPosition = 150
+        spaceship.setScale(0.15)
         spaceship.size.height *= 1.5
         spaceship.zRotation = -π/2
-       addChild(spaceship)
+        addChild(spaceship)
+        
+        boss.position = CGPoint(x:playableRect.maxX+200,y:playableRect.maxY*2/3)
+        boss.zPosition = 50
+        boss.setScale(2)
+        boss.zRotation = π/2
+        boss.name = "boss"
+        boss.physicsBody = SKPhysicsBody(rectangleOf: boss.size)
+        boss.physicsBody!.affectedByGravity = false
+        boss.physicsBody?.categoryBitMask = enemyCat
+        boss.physicsBody?.contactTestBitMask = laserCat
+        addChild(boss)
     
        
        run(SKAction.repeatForever(
          SKAction.sequence([SKAction.run() { [weak self] in
                          self?.spawnEnemy()
                        },
-                       SKAction.wait(forDuration: 2.0)])))
+                       SKAction.wait(forDuration: 2.0)])),withKey: "spwnenemy")
        run(SKAction.repeatForever(
        SKAction.sequence([SKAction.run() { [weak self] in
                        self?.spawnSun_00000()
                      },
-                     SKAction.wait(forDuration: 2.0)])))
+                     SKAction.wait(forDuration: 2.0)])),withKey: "spwnsun")
 
      
        
@@ -239,7 +261,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
          }
          spaceship.run(SKAction.sequence([blinkAction, setHidden]))
          
-         run(enemyCollisionSound)
+         run(hitSound)
          lives -= 1
          
          let explosion = SKEmitterNode(fileNamed: "Explosion.sks")
@@ -257,7 +279,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
        
        func spaceshipCollect(Sun_00000: SKSpriteNode) {
            Sun_00000.removeFromParent()
-         run(enemyCollisionSound)
+         //run(enemyCollisionSound)
            points += 1
        
        }
@@ -277,6 +299,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
              hitEnemies.append(enemy)
              enemy.removeFromParent()
            }
+            if self.level == 3{
+                self.removeAction(forKey: "spwnenemy")
+            }
          }
          for enemy in hitEnemies {
            spaceshipHit(enemy: enemy)
@@ -322,14 +347,42 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enumerateChildNodes(withName: "laser") { node, _ in
           let laser = node as! SKSpriteNode
 
-            if laser.zRotation >= -π/2  {
+            if laser.zRotation >= -π/2 || laser.position.x >= self.cameraRect.maxX {
                 laser.removeFromParent()
             }
         }
         
-        
+        var hitLaser: [SKSpriteNode] = []
+                  enumerateChildNodes(withName: "laser") {
+                    node, _ in
+                    let laser = node as! SKSpriteNode
+                      
+                      if node.frame.insetBy(dx: 20, dy: 20).intersects(
+                        self.boss.frame) {
+                        laser.removeFromParent()
+                        hitLaser.append(laser)
+                      }
+                    }
+                for laser in hitLaser {
+                    bossFight(laser: laser)
+                    }
         
        }
+    
+    func bossFight(laser: SKSpriteNode) {
+        laser.removeFromParent()
+        bossLives -= 1
+        if bossLives <= 0{
+            let gameOverScene = GameOverScene(size: size, won: true)
+                gameOverScene.scaleMode = scaleMode
+                // 2
+                let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+            
+                // 3
+                view?.presentScene(gameOverScene, transition: reveal)
+        }
+    }
+    
        func spawnSun_00000() {
          // 1
          let Sun_00000 = SKSpriteNode(imageNamed: "Sun_00000")
@@ -397,7 +450,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         laser_time -= 1
         if(laser_time <= 0){
             spawnLaser()
-            laser_time = 50
+            laser_time = 50/level
         }
     }
     
@@ -425,23 +478,55 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
        move(sprite: spaceship, velocity: velocity)
        pointslabel.text = "Points: \(points)"
-        livesLabel.text = "X\(lives/2)"
+       livesLabel.text = "X\(lives/2)L\(level)"
         
-       if lives <= 0 && !gameOver {
+       if lives <= -100 && !gameOver {
          gameOver = true
          print("You lose!")
+        
+        let gameOverScene = GameOverScene(size: size, won: false)
+        gameOverScene.scaleMode = scaleMode
+        // 2
+        let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+    
+        // 3
+        view?.presentScene(gameOverScene, transition: reveal)
        
      }
-        if points == 10{
+        if points >= 10 && points < 30{
             level = 2
         }
+        
+        if points >= 30{
+            level = 3
+            spawnBoss()
+            
+        }
+        
      
        }
-     
+    func spawnFire(){
+        
+    }
     
-     
+    func spawnBoss(){
+        boss.position = CGPoint(x:playableRect.maxX*3/4,y:playableRect.maxY*2/3)
+        run(SKAction.repeatForever(
+          SKAction.sequence([SKAction.run() { [weak self] in
+                          self?.spawnFire()
+                        },
+                        SKAction.wait(forDuration: 2.0)])),withKey: "spwnenemy")
+    }
+    
+     func loadGame() {
+            
+           let myScene = GameScene(size: size)
+            myScene.scaleMode = scaleMode
+            let reveal = SKTransition.fade(withDuration: 1.5)
+            view?.presentScene(myScene, transition: reveal)
+            }
     
 
-       
+
     
 }
